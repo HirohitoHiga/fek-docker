@@ -4,20 +4,17 @@ services:
 
     fluentd:
         build: ./fluentd
-        container_name: fluentd
         volumes:
             - ./log:/var/log/apache2
             - ./fluentd/data:/var/log/fluent
 
     elasticsearch:
         image: elasticsearch
-        container_name: elasticsearch
         ports:
             - 9200
 
     kibana:
         image: kibana
-        container_name: kibana
         links:
             - elasticsearch:elasticsearch
         ports:
