@@ -1,21 +1,28 @@
 version: '2'
-
 services:
+  fluentd:
+    build: ./fluentd
+    volumes:
+      - ./log:/var/log/apache2
+      - ./fluentd/data:/var/log/fluent
 
-    fluentd:
-        build: ./fluentd
-        volumes:
-            - ./log:/var/log/apache2
-            - ./fluentd/data:/var/log/fluent
+  elasticsearch:
+    image: elasticsearch
+    ports:
+      - 9200
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+      - esconfig:/usr/share/elasticsearch/config
 
-    elasticsearch:
-        image: elasticsearch
-        ports:
-            - 9200
+  kibana:
+    image: kibana
+    links:
+      - elasticsearch:elasticsearch
+    ports:
+      - 5601:5601
 
-    kibana:
-        image: kibana
-        links:
-            - elasticsearch:elasticsearch
-        ports:
-            - 5601:5601
+volumes:
+  esdata:
+    driver: local
+  esconfig:
+    driver: local
